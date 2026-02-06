@@ -442,11 +442,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj",
+      "projectUniqueName": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj",
       "projectName": "ClothesResell",
-      "projectPath": "c:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj",
+      "projectPath": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj",
       "packagesPath": "C:\\Users\\jonah\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\obj\\",
+      "outputPath": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\jonah\\AppData\\Roaming\\NuGet\\NuGet.Config"

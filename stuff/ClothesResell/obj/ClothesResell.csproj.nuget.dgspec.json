@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj": {}
+    "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj": {
+    "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj",
+        "projectUniqueName": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj",
         "projectName": "ClothesResell",
-        "projectPath": "C:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj",
+        "projectPath": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj",
         "packagesPath": "C:\\Users\\jonah\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\obj\\",
+        "outputPath": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\jonah\\AppData\\Roaming\\NuGet\\NuGet.Config"

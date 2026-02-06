@@ -192,13 +192,14 @@ namespace ClothesResell
                 {
                     conn.Open();
 
-                    // Insert only the ItemName and Price (as ARP) columns into tblbasket
-                    string insertString = "INSERT INTO tblbasket (ItemName, ARP) VALUES (@ItemName, @ARP)";
+                    // OleDb uses positional parameters (?) not named parameters
+                    string insertString = "INSERT INTO tblbasket (ItemName, ARP) VALUES (?, ?)";
 
                     using (OleDbCommand cmd = new OleDbCommand(insertString, conn))
                     {
-                        cmd.Parameters.AddWithValue("@ItemName", itemName);
-                        cmd.Parameters.AddWithValue("@ARP", price);
+                        // Parameters must be added in the SAME ORDER as the ? placeholders
+                        cmd.Parameters.Add("@ItemName", OleDbType.VarChar).Value = itemName;
+                        cmd.Parameters.Add("@ARP", OleDbType.Currency).Value = price;
 
                         cmd.ExecuteNonQuery();
                     }
@@ -216,19 +217,24 @@ namespace ClothesResell
             try
             {
                 //Check if the button column (Action/Buy button) was clicked
-                if (e.ColumnIndex >= 0 && dgBuy.Columns.Count > e.ColumnIndex && dgBuy.Columns[e.ColumnIndex].Name == "btnBuy" && e.RowIndex >= 0)
+                if (e.ColumnIndex >= 0 && e.ColumnIndex < dgBuy.Columns.Count && 
+                    dgBuy.Columns[e.ColumnIndex].Name == "btnBuy" && e.RowIndex >= 0)
                 {
                     // Get all row values
                     string itemName = "";
                     string priceStr = "0";
                     
                     // Find ItemName and Price columns dynamically
-                    for (int i = 0; i < dgBuy.Columns.Count - 1; i++) // -1 to skip the button column
+                    for (int i = 0; i < dgBuy.Columns.Count; i++)
                     {
-                        string columnName = dgBuy.Columns[i].Name.ToLower();
+                        // Skip the button column
+                        if (dgBuy.Columns[i].Name == "btnBuy")
+                            continue;
+                            
+                        string columnName = dgBuy.Columns[i].Name?.ToLower() ?? "";
                         string cellValue = dgBuy.Rows[e.RowIndex].Cells[i].Value?.ToString() ?? "";
                         
-                        if (columnName.Contains("itemname") || columnName.Contains("item name"))
+                        if (columnName.Contains("itemname") || columnName.Contains("item name") || columnName.Contains("item"))
                         {
                             itemName = cellValue;
                         }

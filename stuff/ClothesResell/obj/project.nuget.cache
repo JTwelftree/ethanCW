@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OU2qZOA7ckg=",
+  "dgSpecHash": "f3FAZAcuBrA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jonah\\Desktop\\stuff\\ClothesResell\\ClothesResell.csproj",
+  "projectFilePath": "C:\\Users\\jonah\\ethanCW\\stuff\\ClothesResell\\ClothesResell.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jonah\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
     "C:\\Users\\jonah\\.nuget\\packages\\system.configuration.configurationmanager\\7.0.0\\system.configuration.configurationmanager.7.0.0.nupkg.sha512",
