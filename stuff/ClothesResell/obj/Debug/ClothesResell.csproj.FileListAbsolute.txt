@@ -1,0 +1,68 @@
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\bin\Debug\ClothesResell.exe.config
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\bin\Debug\ClothesResell.exe
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\bin\Debug\ClothesResell.pdb
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.csproj.AssemblyReference.cache
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.Form1.resources
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.Properties.Resources.resources
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.Wallet.resources
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.csproj.GenerateResource.cache
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.csproj.CoreCompileInputs.cache
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.exe
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.pdb
+U:\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.exe.config
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\bin\Debug\ClothesResell.exe.config
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\bin\Debug\ClothesResell.exe
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\bin\Debug\ClothesResell.pdb
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.csproj.AssemblyReference.cache
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.Form1.resources
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.Properties.Resources.resources
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.Wallet.resources
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.csproj.GenerateResource.cache
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.csproj.CoreCompileInputs.cache
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.exe
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.pdb
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.BuyForm.resources
+\\dfs-students\Home$\8036\Profile.V2\Documents\A level comp sci\VScode\ClothesResell\ClothesResell\obj\Debug\ClothesResell.exe.config
+D:\ClothesResell\bin\Debug\ClothesResell.exe.config
+D:\ClothesResell\bin\Debug\ClothesResell.exe
+D:\ClothesResell\bin\Debug\ClothesResell.pdb
+D:\ClothesResell\obj\Debug\ClothesResell.csproj.AssemblyReference.cache
+D:\ClothesResell\obj\Debug\ClothesResell.BuyForm.resources
+D:\ClothesResell\obj\Debug\ClothesResell.Form1.resources
+D:\ClothesResell\obj\Debug\ClothesResell.Properties.Resources.resources
+D:\ClothesResell\obj\Debug\ClothesResell.SellForm.resources
+D:\ClothesResell\obj\Debug\ClothesResell.Wallet.resources
+D:\ClothesResell\obj\Debug\ClothesResell.csproj.GenerateResource.cache
+D:\ClothesResell\obj\Debug\ClothesResell.csproj.CoreCompileInputs.cache
+D:\ClothesResell\obj\Debug\ClothesResell.exe
+D:\ClothesResell\obj\Debug\ClothesResell.pdb
+E:\ClothesResell\bin\Debug\ClothesResell.exe.config
+E:\ClothesResell\bin\Debug\ClothesResell.exe
+E:\ClothesResell\bin\Debug\ClothesResell.pdb
+E:\ClothesResell\obj\Debug\ClothesResell.csproj.AssemblyReference.cache
+E:\ClothesResell\obj\Debug\ClothesResell.BuyForm.resources
+E:\ClothesResell\obj\Debug\ClothesResell.Form1.resources
+E:\ClothesResell\obj\Debug\ClothesResell.Properties.Resources.resources
+E:\ClothesResell\obj\Debug\ClothesResell.SellForm.resources
+E:\ClothesResell\obj\Debug\ClothesResell.Wallet.resources
+E:\ClothesResell\obj\Debug\ClothesResell.csproj.GenerateResource.cache
+E:\ClothesResell\obj\Debug\ClothesResell.csproj.CoreCompileInputs.cache
+E:\ClothesResell\obj\Debug\ClothesResell.exe
+E:\ClothesResell\obj\Debug\ClothesResell.pdb
+E:\ClothesResell\obj\Debug\ClothesResell.exe.config
+F:\ClothesResell\obj\Debug\ClothesResell.csproj.AssemblyReference.cache
+F:\ClothesResell\obj\Debug\ClothesResell.exe.config
+F:\ClothesResell\obj\Debug\ClothesResell.BuyForm.resources
+F:\ClothesResell\obj\Debug\ClothesResell.Form1.resources
+F:\ClothesResell\obj\Debug\ClothesResell.Properties.Resources.resources
+F:\ClothesResell\obj\Debug\ClothesResell.SellForm.resources
+F:\ClothesResell\obj\Debug\ClothesResell.Wallet.resources
+F:\ClothesResell\obj\Debug\ClothesResell.csproj.GenerateResource.cache
+F:\ClothesResell\obj\Debug\ClothesResell.csproj.CoreCompileInputs.cache
+F:\ClothesResell\obj\Debug\ClothesResell.exe
+F:\ClothesResell\obj\Debug\ClothesResell.pdb
+F:\ClothesResell\bin\Debug\ClothesResell.exe.config
+F:\ClothesResell\bin\Debug\ClothesResell.exe
+F:\ClothesResell\bin\Debug\ClothesResell.pdb
+C:\Users\jonah\Desktop\stuff\ClothesResell\obj\Debug\ClothesResell.exe
+C:\Users\jonah\Desktop\stuff\ClothesResell\obj\Debug\ClothesResell.pdb
