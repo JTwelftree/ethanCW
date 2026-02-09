@@ -192,7 +192,7 @@
             this.dgBasket.AllowUserToAddRows = false;
             this.dgBasket.AllowUserToDeleteRows = false;
             this.dgBasket.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgBasket.Location = new System.Drawing.Point(368, 466);
+            this.dgBasket.Location = new System.Drawing.Point(782, 466);
             this.dgBasket.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgBasket.Name = "dgBasket";
             this.dgBasket.RowHeadersWidth = 62;

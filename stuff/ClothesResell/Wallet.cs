@@ -56,15 +56,22 @@ namespace ClothesResell
             //this code runs when the form opens
             try
             {
-                // Update balance display
+                // Update balance display with current user balance from UserBalance class
                 lblBalance.Text = $"Current Balance: £{UserBalance.GetBalance():F2}";
 
                 //connect to the database placed in bin folder
-                // For .NET 6, the exe runs from bin/Debug/net6.0-windows/, but the database is in bin/Debug/
                 string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "dbClothesSimulation.accdb");
                 dbPath = Path.GetFullPath(dbPath);
                 string connString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath}";
 
+                decimal totalInvested = 0;
+                decimal totalSoldFor = 0;
+                decimal cumulativeProfit = 0;
+                
+                // List to track sales for graphing
+                List<decimal> profitHistory = new List<decimal>();
+                List<string> itemNames = new List<string>();
+                
                 //select all records from database - Past Transactions
                 string selectString = "SELECT * FROM tblPastTransactions";
 
@@ -76,26 +83,65 @@ namespace ClothesResell
                     {
                         using (OleDbDataReader reader = cmd.ExecuteReader())
                         {
-                            if (reader.HasRows)
+                            while (reader.Read())
                             {
-                                DataTable dt = new DataTable();
-                                dt.Clear();
-                                dt.Columns.Add("ItemName");
-                                dt.Columns.Add("PriceSold");
-
-                                while (reader.Read())
+                                // Safely get values, handling cases where PriceBought might be null or missing
+                                string priceBoughtStr = "0";
+                                string priceSoldStr = "0";
+                                string itemName = "";
+                                
+                                try
                                 {
-                                    DataRow UserRow = dt.NewRow();
-                                    UserRow["ItemName"] = (string)reader["ItemName"];
-                                    UserRow["PriceSold"] = (string)reader["PriceSold"].ToString();
-                                    dt.Rows.Add(UserRow);
+                                    itemName = reader["ItemName"]?.ToString() ?? "";
                                 }
+                                catch
+                                {
+                                    itemName = "Unknown";
+                                }
+                                
+                                try
+                                {
+                                    // Check if PriceBought column exists and has a value
+                                    int priceBoughtIndex = reader.GetOrdinal("PriceBought");
+                                    if (!reader.IsDBNull(priceBoughtIndex))
+                                    {
+                                        priceBoughtStr = reader["PriceBought"]?.ToString() ?? "0";
+                                    }
+                                }
+                                catch
+                                {
+                                    // PriceBought column might not exist in old records
+                                    priceBoughtStr = "0";
+                                }
+                                
+                                try
+                                {
+                                    priceSoldStr = reader["PriceSold"]?.ToString() ?? "0";
+                                }
+                                catch
+                                {
+                                    priceSoldStr = "0";
+                                }
+                                
+                                decimal.TryParse(priceBoughtStr, out decimal priceBought);
+                                decimal.TryParse(priceSoldStr, out decimal priceSold);
+                                
+                                decimal profit = priceSold - priceBought;
+                                cumulativeProfit += profit;
+                                
+                                // Track totals for sold items
+                                totalInvested += priceBought;
+                                totalSoldFor += priceSold;
+                                
+                                // Store for graph
+                                profitHistory.Add(cumulativeProfit);
+                                itemNames.Add(itemName);
                             }
                         }
                     }
                 }
 
-                //select all records from database - Basket
+                //select all records from database - Basket (current wardrobe)
                 string selectString2 = "SELECT * FROM tblbasket";
 
                 using (OleDbConnection conn2 = new OleDbConnection(connString))
@@ -106,32 +152,162 @@ namespace ClothesResell
                     {
                         using (OleDbDataReader reader2 = cmd2.ExecuteReader())
                         {
-                            if (reader2.HasRows)
-                            {
-                                //Create datatable 
-                                DataTable dt = new DataTable();
-                                dt.Clear();
-                                dt.Columns.Add("ItemName");
-                                dt.Columns.Add("PriceBought");
-                                dt.Columns.Add("ARP");
+                            //Create datatable for wardrobe
+                            DataTable dt = new DataTable();
+                            dt.Clear();
+                            dt.Columns.Add("Item Name");
+                            dt.Columns.Add("Price Bought");
+                            dt.Columns.Add("Resell Price");
 
-                                //for each row returned from database add to datagridview
-                                while (reader2.Read())
-                                {
-                                    DataRow UserRow = dt.NewRow();
-                                    UserRow["ItemName"] = (string)reader2["ItemName"];
-                                    UserRow["PriceBought"] = (string)reader2["PriceBought"].ToString();
-                                    UserRow["ARP"] = (string)reader2["ARP"].ToString();
-                                    dt.Rows.Add(UserRow);
-                                }
+                            //for each row returned from database add to datagridview
+                            while (reader2.Read())
+                            {
+                                DataRow UserRow = dt.NewRow();
+                                UserRow["Item Name"] = reader2["ItemName"]?.ToString() ?? "";
+                                UserRow["Price Bought"] = reader2["PriceBought"]?.ToString() ?? "0";
+                                UserRow["Resell Price"] = reader2["ARP"]?.ToString() ?? "0";
+                                dt.Rows.Add(UserRow);
                             }
+                            
+                            // Bind to the dgBasket DataGridView to show wardrobe
+                            dgBasket.DataSource = dt;
                         }
                     }
+                }
+                
+                // Calculate returns from sold items
+                decimal totalReturn = totalSoldFor - totalInvested;
+                decimal percentageReturn = 0;
+                
+                if (totalInvested > 0)
+                {
+                    percentageReturn = (totalReturn / totalInvested) * 100;
+                }
+                
+                // Update the return labels
+                if (totalReturn >= 0)
+                {
+                    label3.Text = $"+£{totalReturn:F2}";
+                    label3.ForeColor = System.Drawing.Color.GreenYellow;
+                }
+                else
+                {
+                    label3.Text = $"-£{Math.Abs(totalReturn):F2}";
+                    label3.ForeColor = System.Drawing.Color.Red;
+                }
+                
+                if (percentageReturn >= 0)
+                {
+                    label5.Text = $"+{percentageReturn:F2}%";
+                    label5.ForeColor = System.Drawing.Color.GreenYellow;
+                }
+                else
+                {
+                    label5.Text = $"{percentageReturn:F2}%";
+                    label5.ForeColor = System.Drawing.Color.Red;
+                }
+                
+                // Create revenue graph if there are any sales
+                CreateSalesHistoryDisplay(profitHistory, itemNames);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading wallet data: {ex.Message}\n\n{ex.StackTrace}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void CreateSalesHistoryDisplay(List<decimal> profitHistory, List<string> itemNames)
+        {
+            try
+            {
+                // Try to find an existing ListBox or create one
+                ListBox salesHistoryBox = null;
+                
+                // Search for existing ListBox
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl is ListBox && ctrl.Name == "lstSalesHistory")
+                    {
+                        salesHistoryBox = (ListBox)ctrl;
+                        break;
+                    }
+                }
+                
+                // If no ListBox found, create one dynamically
+                if (salesHistoryBox == null)
+                {
+                    salesHistoryBox = new ListBox();
+                    salesHistoryBox.Name = "lstSalesHistory";
+                    salesHistoryBox.Location = new System.Drawing.Point(20, 322);  // Moved up 100px from 422
+                    salesHistoryBox.Size = new System.Drawing.Size(320, 250);
+                    salesHistoryBox.BackColor = System.Drawing.Color.Black;
+                    salesHistoryBox.ForeColor = System.Drawing.Color.White;
+                    salesHistoryBox.Font = new System.Drawing.Font("Consolas", 9);
+                    salesHistoryBox.BorderStyle = BorderStyle.FixedSingle;
+                    this.Controls.Add(salesHistoryBox);
+                    
+                    // Add a label above it
+                    Label lblHistory = new Label();
+                    lblHistory.Text = "Sales History:";
+                    lblHistory.Location = new System.Drawing.Point(20, 292);  // Moved up 100px from 392
+                    lblHistory.Size = new System.Drawing.Size(150, 25);
+                    lblHistory.ForeColor = System.Drawing.Color.White;
+                    lblHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10, System.Drawing.FontStyle.Bold);
+                    this.Controls.Add(lblHistory);
+                }
+                
+                // Clear existing items
+                salesHistoryBox.Items.Clear();
+                
+                // Add header
+                salesHistoryBox.Items.Add("═══════════════════════════════");
+                salesHistoryBox.Items.Add("  PROFIT TRACKER");
+                salesHistoryBox.Items.Add("═══════════════════════════════");
+                salesHistoryBox.Items.Add("");
+                
+                if (profitHistory.Count > 0)
+                {
+                    decimal runningTotal = 0;
+                    
+                    for (int i = 0; i < profitHistory.Count; i++)
+                    {
+                        decimal currentProfit = i == 0 ? profitHistory[0] : profitHistory[i] - profitHistory[i - 1];
+                        runningTotal = profitHistory[i];
+                        
+                        string profitSymbol = currentProfit >= 0 ? "+" : "";
+                        string itemDisplay = itemNames[i].Length > 15 ? itemNames[i].Substring(0, 15) : itemNames[i];
+                        
+                        salesHistoryBox.Items.Add($"Sale {i + 1}: {itemDisplay}");
+                        salesHistoryBox.Items.Add($"  Profit: {profitSymbol}£{currentProfit:F2}");
+                        salesHistoryBox.Items.Add($"  Total:  £{runningTotal:F2}");
+                        salesHistoryBox.Items.Add("───────────────────────────────");
+                    }
+                    
+                    // Summary
+                    salesHistoryBox.Items.Add("");
+                    salesHistoryBox.Items.Add("OVERALL PERFORMANCE:");
+                    string finalSymbol = runningTotal >= 0 ? "+" : "";
+                    salesHistoryBox.Items.Add($"Final Profit: {finalSymbol}£{runningTotal:F2}");
+                    
+                    // Scroll to bottom to show most recent
+                    if (salesHistoryBox.Items.Count > 0)
+                    {
+                        salesHistoryBox.TopIndex = Math.Max(0, salesHistoryBox.Items.Count - 1);
+                    }
+                }
+                else
+                {
+                    salesHistoryBox.Items.Add("  No sales yet!");
+                    salesHistoryBox.Items.Add("");
+                    salesHistoryBox.Items.Add("  Buy items from the BUY page");
+                    salesHistoryBox.Items.Add("  and sell them to start");
+                    salesHistoryBox.Items.Add("  tracking your profit!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading wallet data: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Display creation failed, but don't crash the app
+                MessageBox.Show($"Could not create sales history: {ex.Message}", "Display Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         
@@ -170,4 +346,3 @@ namespace ClothesResell
         }
     }
 }
-
