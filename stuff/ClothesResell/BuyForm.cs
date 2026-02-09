@@ -180,7 +180,7 @@ namespace ClothesResell
         }
 
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        private void AddItemToBasket(int rowIndex, string itemName, decimal price)
+        private void AddItemToBasket(int rowIndex, string itemName, decimal priceBought, decimal avp)
         {
             try
             {
@@ -192,22 +192,22 @@ namespace ClothesResell
                 {
                     conn.Open();
 
-                    // OleDb uses positional parameters (?) not named parameters
-                    string insertString = "INSERT INTO tblbasket (ItemName, ARP) VALUES (?, ?)";
+                    // Escape single quotes in itemName to prevent SQL errors
+                    string safeName = itemName.Replace("'", "''");
+                    
+                    // IMPORTANT: Both PriceBought and ARP are Short Text fields in Access, so they need quotes!
+                    string insertString = $"INSERT INTO tblbasket (ItemName, PriceBought, ARP) VALUES ('{safeName}', '{priceBought}', '{avp}')";
 
                     using (OleDbCommand cmd = new OleDbCommand(insertString, conn))
                     {
-                        // Parameters must be added in the SAME ORDER as the ? placeholders
-                        cmd.Parameters.Add("@ItemName", OleDbType.VarChar).Value = itemName;
-                        cmd.Parameters.Add("@ARP", OleDbType.Currency).Value = price;
-
-                        cmd.ExecuteNonQuery();
+                        int rowsAffected = cmd.ExecuteNonQuery();
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding item to basket: {ex.Message}\n\n{ex.StackTrace}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error adding item to basket: {ex.Message}\n\nInner Exception: {ex.InnerException?.Message}\n\n{ex.StackTrace}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
         }
 
@@ -220,11 +220,12 @@ namespace ClothesResell
                 if (e.ColumnIndex >= 0 && e.ColumnIndex < dgBuy.Columns.Count && 
                     dgBuy.Columns[e.ColumnIndex].Name == "btnBuy" && e.RowIndex >= 0)
                 {
-                    // Get all row values
+                    // Get all row values - we need ItemName, ItemPrice, and AVP
                     string itemName = "";
-                    string priceStr = "0";
+                    string itemPriceStr = "0";
+                    string avpStr = "0";
                     
-                    // Find ItemName and Price columns dynamically
+                    // Find ItemName, ItemPrice, and AVP columns dynamically
                     for (int i = 0; i < dgBuy.Columns.Count; i++)
                     {
                         // Skip the button column
@@ -234,13 +235,17 @@ namespace ClothesResell
                         string columnName = dgBuy.Columns[i].Name?.ToLower() ?? "";
                         string cellValue = dgBuy.Rows[e.RowIndex].Cells[i].Value?.ToString() ?? "";
                         
-                        if (columnName.Contains("itemname") || columnName.Contains("item name") || columnName.Contains("item"))
+                        if (columnName.Contains("itemname") || columnName == "itemname")
                         {
                             itemName = cellValue;
                         }
-                        else if (columnName.Contains("price") && !columnName.Contains("arp"))
+                        else if (columnName.Contains("itemprice") || columnName == "itemprice")
                         {
-                            priceStr = cellValue;
+                            itemPriceStr = cellValue;
+                        }
+                        else if (columnName.Contains("avp") || columnName == "avp")
+                        {
+                            avpStr = cellValue;
                         }
                     }
 
@@ -250,29 +255,34 @@ namespace ClothesResell
                         return;
                     }
 
-                    if (!decimal.TryParse(priceStr, out decimal price))
+                    if (!decimal.TryParse(itemPriceStr, out decimal itemPrice))
                     {
                         MessageBox.Show("Invalid price format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    // Check if user has enough balance
-                    if (UserBalance.GetBalance() < price)
+                    if (!decimal.TryParse(avpStr, out decimal avp))
                     {
-                        MessageBox.Show($"Insufficient funds! You need £{price:F2} but only have £{UserBalance.GetBalance():F2}", "Purchase Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        avp = itemPrice; // Default AVP to item price if not found
+                    }
+
+                    // Check if user has enough balance
+                    if (UserBalance.GetBalance() < itemPrice)
+                    {
+                        MessageBox.Show($"Insufficient funds! You need £{itemPrice:F2} but only have £{UserBalance.GetBalance():F2}", "Purchase Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 
                     // Confirm the purchase
-                    DialogResult result = MessageBox.Show($"Buy {itemName} for £{price:F2}?", "Confirm Purchase", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    DialogResult result = MessageBox.Show($"Buy {itemName} for £{itemPrice:F2}?", "Confirm Purchase", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result != DialogResult.Yes)
                         return;
 
-                    // Add the item to user's basket (tblbasket) so it appears in sell page
-                    AddItemToBasket(e.RowIndex, itemName, price);
+                    // Add the item to user's basket (tblbasket) with ItemPrice as PriceBought and AVP as ARP
+                    AddItemToBasket(e.RowIndex, itemName, itemPrice, avp);
                     
                     // Deduct from balance
-                    UserBalance.DeductBalance(price);
+                    UserBalance.DeductBalance(itemPrice);
                     UpdateBalanceDisplay();
 
                     MessageBox.Show($"Successfully purchased {itemName}! New balance: £{UserBalance.GetBalance():F2}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

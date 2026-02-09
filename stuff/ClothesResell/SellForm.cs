@@ -59,8 +59,8 @@ namespace ClothesResell
                 dbPath = Path.GetFullPath(dbPath);
                 string connString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath}";
 
-                //select all records from tblbasket - items the user has bought
-                string selectString = "SELECT * FROM tblbasket";
+                //select the columns we need from tblbasket (BasketID, ItemName, PriceBought, ARP)
+                string selectString = "SELECT BasketID, ItemName, PriceBought, ARP FROM tblbasket";
 
                 using (OleDbConnection conn = new OleDbConnection(connString))
                 {
@@ -70,15 +70,12 @@ namespace ClothesResell
                     {
                         using (OleDbDataReader reader = cmd.ExecuteReader())
                         {
-                            // Setup columns dynamically based on table structure
-                            DataTable schemaTable = reader.GetSchemaTable();
-                            
+                            // Clear and setup columns explicitly
                             dataGridView1.Columns.Clear();
-                            foreach (DataRow column in schemaTable.Rows)
-                            {
-                                string columnName = column["ColumnName"].ToString();
-                                dataGridView1.Columns.Add(columnName, columnName);
-                            }
+                            dataGridView1.Columns.Add("BasketID", "ID");
+                            dataGridView1.Columns.Add("ItemName", "Item Name");
+                            dataGridView1.Columns.Add("PriceBought", "Price Bought");
+                            dataGridView1.Columns.Add("ARP", "Resell Price");
                             
                             // Create and add button column
                             DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
@@ -93,13 +90,12 @@ namespace ClothesResell
                             {
                                 while (reader.Read())
                                 {
-                                    object[] values = new object[reader.FieldCount + 1];
-                                    for (int i = 0; i < reader.FieldCount; i++)
-                                    {
-                                        values[i] = reader.GetValue(i) ?? "";
-                                    }
-                                    values[reader.FieldCount] = "Sell";
-                                    dataGridView1.Rows.Add(values);
+                                    dataGridView1.Rows.Add(
+                                        reader["BasketID"], 
+                                        reader["ItemName"], 
+                                        reader["PriceBought"],
+                                        reader["ARP"]
+                                    );
                                 }
                             }
                         }
@@ -125,25 +121,9 @@ namespace ClothesResell
                 //Check if the button column (Action/Sell button) was clicked
                 if (e.ColumnIndex >= 0 && dataGridView1.Columns.Count > e.ColumnIndex && dataGridView1.Columns[e.ColumnIndex].Name == "btnSell" && e.RowIndex >= 0)
                 {
-                    // Get all row values
-                    string itemName = "";
-                    string arpStr = "0";
-                    
-                    // Find ItemName and ARP columns dynamically
-                    for (int i = 0; i < dataGridView1.Columns.Count - 1; i++) // -1 to skip the button column
-                    {
-                        string columnName = dataGridView1.Columns[i].Name.ToLower();
-                        string cellValue = dataGridView1.Rows[e.RowIndex].Cells[i].Value?.ToString() ?? "";
-                        
-                        if (columnName.Contains("itemname") || columnName.Contains("item name"))
-                        {
-                            itemName = cellValue;
-                        }
-                        else if (columnName.Contains("arp"))
-                        {
-                            arpStr = cellValue;
-                        }
-                    }
+                    // Get the item name and price from the clicked row
+                    string itemName = dataGridView1.Rows[e.RowIndex].Cells["ItemName"].Value?.ToString() ?? "";
+                    string arpStr = dataGridView1.Rows[e.RowIndex].Cells["ARP"].Value?.ToString() ?? "0";
 
                     if (string.IsNullOrEmpty(itemName))
                     {
