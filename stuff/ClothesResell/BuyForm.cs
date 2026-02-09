@@ -195,6 +195,7 @@ namespace ClothesResell
                     // Escape single quotes in itemName to prevent SQL errors
                     string safeName = itemName.Replace("'", "''");
                     
+                    // IMPORTANT: Both PriceBought and ARP are Short Text fields in Access, so they need quotes!
                     string insertString = $"INSERT INTO tblbasket (ItemName, PriceBought, ARP) VALUES ('{safeName}', '{priceBought}', '{avp}')";
 
                     using (OleDbCommand cmd = new OleDbCommand(insertString, conn))
@@ -219,12 +220,13 @@ namespace ClothesResell
                 if (e.ColumnIndex >= 0 && e.ColumnIndex < dgBuy.Columns.Count && 
                     dgBuy.Columns[e.ColumnIndex].Name == "btnBuy" && e.RowIndex >= 0)
                 {
-                    // Get all row values - we need ItemName, ItemPrice, and AVP
+                    // Get all row values - we need ItemName, ItemPrice, AVP, and FakeProbability
                     string itemName = "";
                     string itemPriceStr = "0";
                     string avpStr = "0";
+                    string fakeProbabilityStr = "0";
                     
-                    // Find ItemName, ItemPrice, and AVP columns dynamically
+                    // Find ItemName, ItemPrice, AVP, and FakeProbability columns dynamically
                     for (int i = 0; i < dgBuy.Columns.Count; i++)
                     {
                         // Skip the button column
@@ -246,6 +248,10 @@ namespace ClothesResell
                         {
                             avpStr = cellValue;
                         }
+                        else if (columnName.Contains("fakeprobability") || columnName == "fakeprobability")
+                        {
+                            fakeProbabilityStr = cellValue;
+                        }
                     }
 
                     if (string.IsNullOrEmpty(itemName))
@@ -265,6 +271,11 @@ namespace ClothesResell
                         avp = itemPrice; // Default AVP to item price if not found
                     }
 
+                    if (!int.TryParse(fakeProbabilityStr, out int fakeProbability))
+                    {
+                        fakeProbability = 0; // Default to 0% chance of being fake
+                    }
+
                     // Check if user has enough balance
                     if (UserBalance.GetBalance() < itemPrice)
                     {
@@ -277,14 +288,30 @@ namespace ClothesResell
                     if (result != DialogResult.Yes)
                         return;
 
-                    // Add the item to user's basket (tblbasket) with ItemPrice as PriceBought and AVP as ARP
-                    AddItemToBasket(e.RowIndex, itemName, itemPrice, avp);
-                    
-                    // Deduct from balance
+                    // Check if item is fake based on FakeProbability
+                    Random random = new Random();
+                    int roll = random.Next(0, 100); // Random number between 0-99
+                    bool isFake = roll < fakeProbability;
+
+                    // Deduct from balance regardless (you already paid)
                     UserBalance.DeductBalance(itemPrice);
                     UpdateBalanceDisplay();
 
-                    MessageBox.Show($"Successfully purchased {itemName}! New balance: £{UserBalance.GetBalance():F2}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Show different messages for real vs fake items
+                    if (isFake)
+                    {
+                        // Don't add fake items to the basket!
+                        MessageBox.Show($"Oh no! The {itemName} you bought is FAKE!\nYou lost £{itemPrice:F2} and got nothing!\n\nNew balance: £{UserBalance.GetBalance():F2}", 
+                            "Fake Item!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        // Only add real items to the basket
+                        AddItemToBasket(e.RowIndex, itemName, itemPrice, avp);
+                        MessageBox.Show($"Successfully purchased {itemName}!\nResale value: £{avp:F2}\nNew balance: £{UserBalance.GetBalance():F2}", 
+                            "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    
                     LoadBasketData(); // Refresh the grid
                 }
             }
