@@ -195,7 +195,6 @@ namespace ClothesResell
                     // Escape single quotes in itemName to prevent SQL errors
                     string safeName = itemName.Replace("'", "''");
                     
-                    // IMPORTANT: Both PriceBought and ARP are Short Text fields in Access, so they need quotes!
                     string insertString = $"INSERT INTO tblbasket (ItemName, PriceBought, ARP) VALUES ('{safeName}', '{priceBought}', '{avp}')";
 
                     using (OleDbCommand cmd = new OleDbCommand(insertString, conn))
